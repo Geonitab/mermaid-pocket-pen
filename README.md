@@ -1,4 +1,14 @@
-# Welcome to your Lovable project
+# Mermaid.js Editor & Viewer
+
+A modern, responsive web application for creating and editing Mermaid diagrams with live preview, example templates, and export functionality.
+
+## Features
+
+- **Live Preview**: See your diagrams render in real-time as you type
+- **Example Templates**: Quick-start templates including flowcharts, sequence diagrams, Gantt charts, git diagrams, ER diagrams, and class diagrams
+- **Export Options**: Download diagrams as SVG or PNG files
+- **Mobile Optimised**: Fully responsive design that works seamlessly on iPhone and other mobile devices
+- **Dark Mode**: Beautiful dark theme with cyan/blue accents
 
 ## Project info
 
