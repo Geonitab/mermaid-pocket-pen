@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GitBranch, Users, Calendar, Database, Workflow, FileCode } from "lucide-react";
+import { GitBranch, Users, Calendar, Database, Workflow, FileCode, Boxes } from "lucide-react";
 
 const templates = [
   {
@@ -71,6 +71,26 @@ const templates = [
         int orderNumber
         date orderDate
     }`,
+  },
+  {
+    name: "Class Diagram",
+    icon: Boxes,
+    code: `classDiagram
+    class Animal {
+        +String name
+        +int age
+        +makeSound()
+    }
+    class Dog {
+        +String breed
+        +bark()
+    }
+    class Cat {
+        +Boolean indoor
+        +meow()
+    }
+    Animal <|-- Dog
+    Animal <|-- Cat`,
   },
 ];
 
