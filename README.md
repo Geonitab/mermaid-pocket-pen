@@ -8,6 +8,8 @@ A modern, responsive web application for creating and editing Mermaid diagrams w
 - **Example Templates**: Quick-start templates including flowcharts, sequence diagrams, Gantt charts, git diagrams, ER diagrams, and class diagrams
 - **Export Options**: Download diagrams as SVG or PNG files
 - **Mobile Optimised**: Fully responsive design that works seamlessly on iPhone and other mobile devices
+- **Installable PWA**: Install the app to your home screen for offline access and a native app experience
+- **Offline Support**: Works without internet connection once installed
 - **Dark Mode**: Beautiful dark theme with cyan/blue accents
 
 ## Project info
