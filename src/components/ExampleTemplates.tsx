@@ -1,45 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GitBranch, Users, Calendar, Database, Workflow } from "lucide-react";
+import { GitBranch, Users, Calendar, Database, Workflow, FileCode } from "lucide-react";
 
 const templates = [
   {
-    name: "Flödesschema",
+    name: "Blank",
+    icon: FileCode,
+    code: ``,
+  },
+  {
+    name: "Flowchart",
     icon: Workflow,
     code: `graph TD
-    A[Start] --> B{Beslut?}
-    B -->|Ja| C[Utför handling]
-    B -->|Nej| D[Alternativ väg]
-    C --> E[Slut]
+    A[Start] --> B{Decision?}
+    B -->|Yes| C[Perform action]
+    B -->|No| D[Alternative path]
+    C --> E[End]
     D --> E`,
   },
   {
-    name: "Sekvensdiagram",
+    name: "Sequence Diagram",
     icon: Users,
     code: `sequenceDiagram
     participant A as Alice
     participant B as Bob
-    A->>B: Hej Bob!
-    B->>A: Hej Alice!
-    A->>B: Hur mår du?
-    B->>A: Bra, tack!`,
+    A->>B: Hello Bob!
+    B->>A: Hello Alice!
+    A->>B: How are you?
+    B->>A: Fine, thanks!`,
   },
   {
-    name: "Gantt-schema",
+    name: "Gantt Chart",
     icon: Calendar,
     code: `gantt
-    title Projektplan
+    title Project Plan
     dateFormat YYYY-MM-DD
-    section Fas 1
-    Planering: 2024-01-01, 30d
+    section Phase 1
+    Planning: 2024-01-01, 30d
     Design: 2024-02-01, 20d
-    section Fas 2
-    Utveckling: 2024-02-15, 45d
-    Testning: 2024-04-01, 15d`,
+    section Phase 2
+    Development: 2024-02-15, 45d
+    Testing: 2024-04-01, 15d`,
   },
   {
-    name: "Git-diagram",
+    name: "Git Diagram",
     icon: GitBranch,
     code: `gitGraph
     commit
@@ -53,7 +58,7 @@ const templates = [
     commit`,
   },
   {
-    name: "ER-diagram",
+    name: "ER Diagram",
     icon: Database,
     code: `erDiagram
     CUSTOMER ||--o{ ORDER : places
@@ -76,7 +81,7 @@ interface ExampleTemplatesProps {
 export const ExampleTemplates = ({ onSelectTemplate }: ExampleTemplatesProps) => {
   return (
     <Card className="p-4 bg-card border-border">
-      <h2 className="text-lg font-semibold mb-3 text-foreground">Exempel-mallar</h2>
+      <h2 className="text-lg font-semibold mb-3 text-foreground">Example Templates</h2>
       <ScrollArea className="w-full">
         <div className="flex gap-3 pb-2">
           {templates.map((template) => (

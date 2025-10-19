@@ -22,13 +22,13 @@ export const MermaidEditor = () => {
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
     setCopied(true);
-    toast.success("Kopierat till urklipp!");
+    toast.success("Copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleTemplateSelect = (template: string) => {
     setCode(template);
-    toast.success("Mall laddad!");
+    toast.success("Template loaded!");
   };
 
   return (
@@ -40,7 +40,7 @@ export const MermaidEditor = () => {
             Mermaid Editor
           </h1>
           <p className="text-muted-foreground text-lg">
-            Skapa diagram med enkel textsyntax
+            Create diagrams with simple text syntax
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export const MermaidEditor = () => {
               <Card className="p-4 bg-card border-border shadow-glow">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-foreground">Kod</h2>
+                    <h2 className="text-lg font-semibold text-foreground">Code</h2>
                     <Button
                       variant="outline"
                       size="sm"
@@ -75,12 +75,12 @@ export const MermaidEditor = () => {
                       {copied ? (
                         <>
                           <Check className="h-4 w-4" />
-                          Kopierat
+                          Copied
                         </>
                       ) : (
                         <>
                           <Copy className="h-4 w-4" />
-                          Kopiera
+                          Copy
                         </>
                       )}
                     </Button>
@@ -89,7 +89,7 @@ export const MermaidEditor = () => {
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     className="font-mono text-sm min-h-[400px] bg-secondary border-border focus:ring-primary"
-                    placeholder="Skriv din Mermaid-kod här..."
+                    placeholder="Write your Mermaid code here..."
                   />
                 </div>
               </Card>
@@ -119,12 +119,12 @@ export const MermaidEditor = () => {
                   {copied ? (
                     <>
                       <Check className="h-4 w-4" />
-                      Kopierat
+                      Copied
                     </>
                   ) : (
                     <>
                       <Copy className="h-4 w-4" />
-                      Kopiera
+                      Copy
                     </>
                   )}
                 </Button>
@@ -133,7 +133,7 @@ export const MermaidEditor = () => {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 className="font-mono text-sm min-h-[600px] bg-secondary border-border focus:ring-primary"
-                placeholder="Skriv din Mermaid-kod här..."
+                placeholder="Write your Mermaid code here..."
               />
             </div>
           </Card>
