@@ -1,0 +1,123 @@
+import { useEffect, useRef } from "react";
+import mermaid from "mermaid";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toast } from "sonner";
+
+interface MermaidViewerProps {
+  code: string;
+}
+
+export const MermaidViewer = ({ code }: MermaidViewerProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+      securityLevel: "loose",
+      fontFamily: "inherit",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (containerRef.current && code) {
+      const renderDiagram = async () => {
+        try {
+          containerRef.current!.innerHTML = "";
+          const { svg } = await mermaid.render(`mermaid-${Date.now()}`, code);
+          containerRef.current!.innerHTML = svg;
+        } catch (error) {
+          console.error("Mermaid rendering error:", error);
+          containerRef.current!.innerHTML = `
+            <div class="text-destructive p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+              <p class="font-semibold mb-2">Fel i syntaxen</p>
+              <p class="text-sm opacity-80">Kontrollera din Mermaid-kod och försök igen.</p>
+            </div>
+          `;
+        }
+      };
+      renderDiagram();
+    }
+  }, [code]);
+
+  const handleExport = async (format: "svg" | "png") => {
+    try {
+      const svgElement = containerRef.current?.querySelector("svg");
+      if (!svgElement) {
+        toast.error("Inget diagram att exportera");
+        return;
+      }
+
+      if (format === "svg") {
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const blob = new Blob([svgData], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "diagram.svg";
+        link.click();
+        URL.revokeObjectURL(url);
+        toast.success("SVG nedladdat!");
+      } else {
+        // PNG export
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const svgData = new XMLSerializer().serializeToString(svgElement);
+        const img = new Image();
+        
+        img.onload = () => {
+          canvas.width = img.width * 2;
+          canvas.height = img.height * 2;
+          ctx?.scale(2, 2);
+          ctx?.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "diagram.png";
+              link.click();
+              URL.revokeObjectURL(url);
+              toast.success("PNG nedladdat!");
+            }
+          });
+        };
+        
+        img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Kunde inte exportera diagrammet");
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2 flex-wrap">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleExport("svg")}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          SVG
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handleExport("png")}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          PNG
+        </Button>
+      </div>
+      <div
+        ref={containerRef}
+        className="bg-secondary/50 p-6 rounded-lg border border-border min-h-[400px] flex items-center justify-center overflow-auto"
+      />
+    </div>
+  );
+};
