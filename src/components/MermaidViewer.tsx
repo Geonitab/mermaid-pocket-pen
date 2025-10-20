@@ -6,9 +6,10 @@ import { toast } from "sonner";
 
 interface MermaidViewerProps {
   code: string;
+  onError?: (error: { line?: number; message: string } | null) => void;
 }
 
-export const MermaidViewer = ({ code }: MermaidViewerProps) => {
+export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,8 +28,25 @@ export const MermaidViewer = ({ code }: MermaidViewerProps) => {
           containerRef.current!.innerHTML = "";
           const { svg } = await mermaid.render(`mermaid-${Date.now()}`, code);
           containerRef.current!.innerHTML = svg;
-        } catch (error) {
+          onError?.(null);
+        } catch (error: any) {
           console.error("Mermaid rendering error:", error);
+          
+          // Extract line number and message from error
+          let lineNumber: number | undefined;
+          let errorMessage = "Kontrollera din Mermaid-kod och försök igen.";
+          
+          if (error?.message) {
+            errorMessage = error.message;
+            // Try to extract line number from error message
+            const lineMatch = error.message.match(/line (\d+)/i);
+            if (lineMatch) {
+              lineNumber = parseInt(lineMatch[1]);
+            }
+          }
+          
+          onError?.({ line: lineNumber, message: errorMessage });
+          
           containerRef.current!.innerHTML = `
             <div class="text-destructive p-4 rounded-lg bg-destructive/10 border border-destructive/20">
               <p class="font-semibold mb-2">Fel i syntaxen</p>

@@ -3,9 +3,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileCode, Eye, Download, Copy, Check, Upload } from "lucide-react";
+import { FileCode, Eye, Download, Copy, Check, Upload, AlertCircle } from "lucide-react";
 import { MermaidViewer } from "./MermaidViewer";
 import { ExampleTemplates } from "./ExampleTemplates";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 
 const defaultDiagram = `graph TD
@@ -18,6 +19,7 @@ const defaultDiagram = `graph TD
 export const MermaidEditor = () => {
   const [code, setCode] = useState(defaultDiagram);
   const [copied, setCopied] = useState(false);
+  const [syntaxError, setSyntaxError] = useState<{ line?: number; message: string } | null>(null);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -67,6 +69,17 @@ export const MermaidEditor = () => {
 
         {/* Templates */}
         <ExampleTemplates onSelectTemplate={handleTemplateSelect} />
+
+        {/* Syntax Error Alert */}
+        {syntaxError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Syntaxfel {syntaxError.line ? `på rad ${syntaxError.line}` : ''}</AlertTitle>
+            <AlertDescription className="text-sm mt-2">
+              {syntaxError.message}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Main Content - Mobile Tabs, Desktop Split */}
         <div className="block md:hidden">
@@ -137,7 +150,7 @@ export const MermaidEditor = () => {
             <TabsContent value="preview" className="mt-0">
               <Card className="p-4 bg-card border-border shadow-glow">
                 <h2 className="text-lg font-semibold mb-3 text-foreground">Preview</h2>
-                <MermaidViewer code={code} />
+                <MermaidViewer code={code} onError={setSyntaxError} />
               </Card>
             </TabsContent>
           </Tabs>
@@ -197,7 +210,7 @@ export const MermaidEditor = () => {
 
           <Card className="p-6 bg-card border-border shadow-glow">
             <h2 className="text-xl font-semibold mb-4 text-foreground">Preview</h2>
-            <MermaidViewer code={code} />
+            <MermaidViewer code={code} onError={setSyntaxError} />
           </Card>
         </div>
       </div>
