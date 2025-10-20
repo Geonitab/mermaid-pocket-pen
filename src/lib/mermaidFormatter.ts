@@ -41,7 +41,7 @@ function formatFlowchart(lines: string[]): string {
     
     if (trimmed.startsWith('%%')) {
       comments.push(trimmed);
-    } else if (trimmed.includes('-->') || trimmed.includes('---') || trimmed.includes('-.->') || trimmed.includes('==>')) {
+    } else if (trimmed.includes('-->') || trimmed.includes('---') || trimmed.includes('-.->') || trimmed.includes('==>') || trimmed.includes('--o') || trimmed.includes('--x')) {
       connections.push(trimmed);
     } else {
       nodeDefinitions.push(trimmed);
@@ -55,11 +55,11 @@ function formatFlowchart(lines: string[]): string {
   }
   
   if (nodeDefinitions.length > 0) {
-    formatted.push(...nodeDefinitions.map(n => `    ${n}`), '');
+    formatted.push(...nodeDefinitions, '');
   }
   
   if (connections.length > 0) {
-    formatted.push(...connections.map(c => `    ${c}`));
+    formatted.push(...connections);
   }
   
   return formatted.join('\n');
@@ -93,11 +93,11 @@ function formatSequenceDiagram(lines: string[]): string {
   }
   
   if (participants.length > 0) {
-    formatted.push(...participants.map(p => `    ${p}`), '');
+    formatted.push(...participants, '');
   }
   
   if (interactions.length > 0) {
-    formatted.push(...interactions.map(i => `    ${i}`));
+    formatted.push(...interactions);
   }
   
   return formatted.join('\n');
@@ -129,7 +129,7 @@ function formatClassDiagram(lines: string[]): string {
       currentClass = [];
       inClass = false;
     } else if (inClass) {
-      currentClass.push(`        ${trimmed}`);
+      currentClass.push(`    ${trimmed}`);
     } else if (trimmed.includes('<|--') || trimmed.includes('-->') || trimmed.includes('--')) {
       relationships.push(trimmed);
     }
@@ -142,11 +142,11 @@ function formatClassDiagram(lines: string[]): string {
   const formatted = [header];
   
   if (classes.length > 0) {
-    formatted.push(...classes.map(c => `    ${c}`), '');
+    formatted.push(...classes, '');
   }
   
   if (relationships.length > 0) {
-    formatted.push(...relationships.map(r => `    ${r}`));
+    formatted.push(...relationships);
   }
   
   return formatted.join('\n');
@@ -178,7 +178,7 @@ function formatERDiagram(lines: string[]): string {
       currentEntity = [];
       inEntity = false;
     } else if (inEntity) {
-      currentEntity.push(`        ${trimmed}`);
+      currentEntity.push(`    ${trimmed}`);
     } else if (trimmed.includes('||--') || trimmed.includes('}o--') || trimmed.includes('--o{')) {
       relationships.push(trimmed);
     }
@@ -191,11 +191,11 @@ function formatERDiagram(lines: string[]): string {
   const formatted = [header];
   
   if (relationships.length > 0) {
-    formatted.push(...relationships.map(r => `    ${r}`), '');
+    formatted.push(...relationships, '');
   }
   
   if (entities.length > 0) {
-    formatted.push(...entities.map(e => `    ${e}`));
+    formatted.push(...entities);
   }
   
   return formatted.join('\n');
@@ -203,10 +203,7 @@ function formatERDiagram(lines: string[]): string {
 
 function formatGitGraph(lines: string[]): string {
   const header = lines[0].trim();
-  const rest = lines.slice(1).map(line => {
-    const trimmed = line.trim();
-    return trimmed ? `    ${trimmed}` : '';
-  }).filter(line => line);
+  const rest = lines.slice(1).map(line => line.trim()).filter(line => line);
   
   return [header, ...rest].join('\n');
 }
@@ -243,7 +240,7 @@ function formatGantt(lines: string[]): string {
   const formatted = [header];
   
   if (metadata.length > 0) {
-    formatted.push(...metadata.map(m => `    ${m}`), '');
+    formatted.push(...metadata, '');
   }
   
   if (sections.length > 0) {
