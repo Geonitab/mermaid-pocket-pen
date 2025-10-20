@@ -20,6 +20,8 @@ export const MermaidEditor = () => {
   const [code, setCode] = useState(defaultDiagram);
   const [copied, setCopied] = useState(false);
   const [syntaxError, setSyntaxError] = useState<{ line?: number; message: string } | null>(null);
+  
+  const lineNumbers = code.split('\n').map((_, i) => i + 1);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -137,12 +139,24 @@ export const MermaidEditor = () => {
                       </Button>
                     </div>
                   </div>
-                  <Textarea
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    className="font-mono text-sm min-h-[400px] bg-secondary border-border focus:ring-primary"
-                    placeholder="Write your Mermaid code here..."
-                  />
+                  <div className="flex gap-2">
+                    <div className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border">
+                      {lineNumbers.map((num) => (
+                        <div 
+                          key={num} 
+                          className={`leading-6 ${syntaxError?.line === num ? 'text-destructive font-bold' : ''}`}
+                        >
+                          {num}
+                        </div>
+                      ))}
+                    </div>
+                    <Textarea
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      className="font-mono text-sm min-h-[400px] bg-secondary border-border focus:ring-primary flex-1"
+                      placeholder="Write your Mermaid code here..."
+                    />
+                  </div>
                 </div>
               </Card>
             </TabsContent>
@@ -199,12 +213,24 @@ export const MermaidEditor = () => {
                   </Button>
                 </div>
               </div>
-              <Textarea
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="font-mono text-sm min-h-[600px] bg-secondary border-border focus:ring-primary"
-                placeholder="Write your Mermaid code here..."
-              />
+              <div className="flex gap-2">
+                <div className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border">
+                  {lineNumbers.map((num) => (
+                    <div 
+                      key={num} 
+                      className={`leading-6 ${syntaxError?.line === num ? 'text-destructive font-bold' : ''}`}
+                    >
+                      {num}
+                    </div>
+                  ))}
+                </div>
+                <Textarea
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  className="font-mono text-sm min-h-[600px] bg-secondary border-border focus:ring-primary flex-1"
+                  placeholder="Write your Mermaid code here..."
+                />
+              </div>
             </div>
           </Card>
 
