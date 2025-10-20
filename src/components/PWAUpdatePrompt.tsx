@@ -10,11 +10,11 @@ export const PWAUpdatePrompt = () => {
           if (newWorker) {
             newWorker.addEventListener("statechange", () => {
               if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-                toast.info("Ny version tillgänglig!", {
-                  description: "En ny version av appen finns tillgänglig.",
+                toast.info("New version available!", {
+                  description: "A new version of the app is available.",
                   duration: Infinity,
                   action: {
-                    label: "Uppdatera",
+                    label: "Update",
                     onClick: () => {
                       newWorker.postMessage({ type: "SKIP_WAITING" });
                       window.location.reload();

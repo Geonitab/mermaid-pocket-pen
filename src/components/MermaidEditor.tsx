@@ -3,11 +3,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileCode, Eye, Download, Copy, Check, Upload, AlertCircle } from "lucide-react";
+import { FileCode, Eye, Download, Copy, Check, Upload, AlertCircle, Wand2 } from "lucide-react";
 import { MermaidViewer } from "./MermaidViewer";
 import { ExampleTemplates } from "./ExampleTemplates";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { formatMermaidCode } from "@/lib/mermaidFormatter";
 
 const defaultDiagram = `graph TD
     A[Start] --> B{Decision}
@@ -38,6 +39,16 @@ export const MermaidEditor = () => {
     setCopied(true);
     toast.success("Copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleFormat = () => {
+    try {
+      const formatted = formatMermaidCode(code);
+      setCode(formatted);
+      toast.success("Code formatted successfully!");
+    } catch (error) {
+      toast.error("Failed to format code");
+    }
   };
 
   const handleTemplateSelect = (template: string) => {
@@ -86,7 +97,7 @@ export const MermaidEditor = () => {
         {syntaxError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Syntaxfel {syntaxError.line ? `på rad ${syntaxError.line}` : ''}</AlertTitle>
+            <AlertTitle>Syntax Error {syntaxError.line ? `on line ${syntaxError.line}` : ''}</AlertTitle>
             <AlertDescription className="text-sm mt-2">
               {syntaxError.message}
             </AlertDescription>
@@ -113,6 +124,15 @@ export const MermaidEditor = () => {
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-foreground">Code</h2>
                     <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleFormat}
+                        className="gap-2"
+                      >
+                        <Wand2 className="h-4 w-4" />
+                        Format
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -193,6 +213,15 @@ export const MermaidEditor = () => {
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-foreground">Editor</h2>
                 <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleFormat}
+                    className="gap-2"
+                  >
+                    <Wand2 className="h-4 w-4" />
+                    Format
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"

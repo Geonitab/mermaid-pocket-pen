@@ -34,7 +34,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
           
           // Extract line number and message from error
           let lineNumber: number | undefined;
-          let errorMessage = "Kontrollera din Mermaid-kod och försök igen.";
+          let errorMessage = "Please check your Mermaid code and try again.";
           
           if (error?.message) {
             errorMessage = error.message;
@@ -49,8 +49,8 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
           
           containerRef.current!.innerHTML = `
             <div class="text-destructive p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-              <p class="font-semibold mb-2">Fel i syntaxen</p>
-              <p class="text-sm opacity-80">Kontrollera din Mermaid-kod och försök igen.</p>
+              <p class="font-semibold mb-2">Syntax Error</p>
+              <p class="text-sm opacity-80">Please check your Mermaid code and try again.</p>
             </div>
           `;
         }
@@ -63,7 +63,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
     try {
       const svgElement = containerRef.current?.querySelector("svg");
       if (!svgElement) {
-        toast.error("Inget diagram att exportera");
+        toast.error("No diagram to export");
         return;
       }
 
@@ -76,7 +76,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
         link.download = "diagram.svg";
         link.click();
         URL.revokeObjectURL(url);
-        toast.success("SVG nedladdat!");
+        toast.success("SVG downloaded!");
       } else {
         // PNG export
         const canvas = document.createElement("canvas");
@@ -97,7 +97,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
               link.download = "diagram.png";
               link.click();
               URL.revokeObjectURL(url);
-              toast.success("PNG nedladdat!");
+              toast.success("PNG downloaded!");
             }
           });
         };
@@ -106,7 +106,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
       }
     } catch (error) {
       console.error("Export error:", error);
-      toast.error("Kunde inte exportera diagrammet");
+      toast.error("Failed to export diagram");
     }
   };
 
