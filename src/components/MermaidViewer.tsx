@@ -58,7 +58,7 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
           }
         };
         renderDiagram();
-      }, 600);
+      }, 2000);
 
       return () => clearTimeout(timeoutId);
     }
