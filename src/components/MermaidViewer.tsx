@@ -23,41 +23,46 @@ export const MermaidViewer = ({ code, onError }: MermaidViewerProps) => {
 
   useEffect(() => {
     if (containerRef.current && code) {
-      const renderDiagram = async () => {
-        try {
-          containerRef.current!.innerHTML = "";
-          const { svg } = await mermaid.render(`mermaid-${Date.now()}`, code);
-          containerRef.current!.innerHTML = svg;
-          onError?.(null);
-        } catch (error: any) {
-          console.error("Mermaid rendering error:", error);
-          
-          // Extract line number and message from error
-          let lineNumber: number | undefined;
-          let errorMessage = "Please check your Mermaid code and try again.";
-          
-          if (error?.message) {
-            errorMessage = error.message;
-            // Try to extract line number from error message
-            const lineMatch = error.message.match(/line (\d+)/i);
-            if (lineMatch) {
-              lineNumber = parseInt(lineMatch[1]);
+      // Debounce the rendering to avoid checking syntax on every keystroke
+      const timeoutId = setTimeout(() => {
+        const renderDiagram = async () => {
+          try {
+            containerRef.current!.innerHTML = "";
+            const { svg } = await mermaid.render(`mermaid-${Date.now()}`, code);
+            containerRef.current!.innerHTML = svg;
+            onError?.(null);
+          } catch (error: any) {
+            console.error("Mermaid rendering error:", error);
+            
+            // Extract line number and message from error
+            let lineNumber: number | undefined;
+            let errorMessage = "Please check your Mermaid code and try again.";
+            
+            if (error?.message) {
+              errorMessage = error.message;
+              // Try to extract line number from error message
+              const lineMatch = error.message.match(/line (\d+)/i);
+              if (lineMatch) {
+                lineNumber = parseInt(lineMatch[1]);
+              }
             }
+            
+            onError?.({ line: lineNumber, message: errorMessage });
+            
+            containerRef.current!.innerHTML = `
+              <div class="text-destructive p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                <p class="font-semibold mb-2">Syntax Error</p>
+                <p class="text-sm opacity-80">Please check your Mermaid code and try again.</p>
+              </div>
+            `;
           }
-          
-          onError?.({ line: lineNumber, message: errorMessage });
-          
-          containerRef.current!.innerHTML = `
-            <div class="text-destructive p-4 rounded-lg bg-destructive/10 border border-destructive/20">
-              <p class="font-semibold mb-2">Syntax Error</p>
-              <p class="text-sm opacity-80">Please check your Mermaid code and try again.</p>
-            </div>
-          `;
-        }
-      };
-      renderDiagram();
+        };
+        renderDiagram();
+      }, 600);
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [code]);
+  }, [code, onError]);
 
   const handleExport = async (format: "svg" | "png") => {
     try {
