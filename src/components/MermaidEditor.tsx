@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,8 +20,18 @@ export const MermaidEditor = () => {
   const [code, setCode] = useState(defaultDiagram);
   const [copied, setCopied] = useState(false);
   const [syntaxError, setSyntaxError] = useState<{ line?: number; message: string } | null>(null);
+  const textareaRefMobile = useRef<HTMLTextAreaElement>(null);
+  const textareaRefDesktop = useRef<HTMLTextAreaElement>(null);
+  const lineNumbersRefMobile = useRef<HTMLDivElement>(null);
+  const lineNumbersRefDesktop = useRef<HTMLDivElement>(null);
   
   const lineNumbers = code.split('\n').map((_, i) => i + 1);
+
+  const handleScroll = (textarea: HTMLTextAreaElement, lineNumbersDiv: HTMLDivElement | null) => {
+    if (lineNumbersDiv) {
+      lineNumbersDiv.scrollTop = textarea.scrollTop;
+    }
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -139,8 +149,12 @@ export const MermaidEditor = () => {
                       </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <div className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border">
+                  <div className="flex gap-2 relative">
+                    <div 
+                      ref={lineNumbersRefMobile}
+                      className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border overflow-hidden"
+                      style={{ maxHeight: '400px' }}
+                    >
                       {lineNumbers.map((num) => (
                         <div 
                           key={num} 
@@ -151,8 +165,10 @@ export const MermaidEditor = () => {
                       ))}
                     </div>
                     <Textarea
+                      ref={textareaRefMobile}
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
+                      onScroll={(e) => handleScroll(e.currentTarget, lineNumbersRefMobile.current)}
                       className="font-mono text-sm min-h-[400px] bg-secondary border-border focus:ring-primary flex-1"
                       placeholder="Write your Mermaid code here..."
                     />
@@ -213,8 +229,12 @@ export const MermaidEditor = () => {
                   </Button>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <div className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border">
+              <div className="flex gap-2 relative">
+                <div 
+                  ref={lineNumbersRefDesktop}
+                  className="flex flex-col text-right text-muted-foreground font-mono text-sm pt-2 pr-2 select-none border-r border-border overflow-hidden"
+                  style={{ maxHeight: '600px' }}
+                >
                   {lineNumbers.map((num) => (
                     <div 
                       key={num} 
@@ -225,8 +245,10 @@ export const MermaidEditor = () => {
                   ))}
                 </div>
                 <Textarea
+                  ref={textareaRefDesktop}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
+                  onScroll={(e) => handleScroll(e.currentTarget, lineNumbersRefDesktop.current)}
                   className="font-mono text-sm min-h-[600px] bg-secondary border-border focus:ring-primary flex-1"
                   placeholder="Write your Mermaid code here..."
                 />
