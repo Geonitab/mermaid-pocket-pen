@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileCode, Eye, Download, Copy, Check } from "lucide-react";
+import { FileCode, Eye, Download, Copy, Check, Upload } from "lucide-react";
 import { MermaidViewer } from "./MermaidViewer";
 import { ExampleTemplates } from "./ExampleTemplates";
 import { toast } from "sonner";
@@ -29,6 +29,27 @@ export const MermaidEditor = () => {
   const handleTemplateSelect = (template: string) => {
     setCode(template);
     toast.success("Template loaded!");
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.name.endsWith('.mmd')) {
+        toast.error("Please upload a .mmd file");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        setCode(content);
+        toast.success("File loaded successfully!");
+      };
+      reader.onerror = () => {
+        toast.error("Failed to read file");
+      };
+      reader.readAsText(file);
+    }
   };
 
   return (
@@ -66,24 +87,42 @@ export const MermaidEditor = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-foreground">Code</h2>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCopy}
-                      className="gap-2"
-                    >
-                      {copied ? (
-                        <>
-                          <Check className="h-4 w-4" />
-                          Copied
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                          Copy
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => document.getElementById('file-upload-mobile')?.click()}
+                        className="gap-2"
+                      >
+                        <Upload className="h-4 w-4" />
+                        Upload
+                      </Button>
+                      <input
+                        id="file-upload-mobile"
+                        type="file"
+                        accept=".mmd"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCopy}
+                        className="gap-2"
+                      >
+                        {copied ? (
+                          <>
+                            <Check className="h-4 w-4" />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-4 w-4" />
+                            Copy
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                   <Textarea
                     value={code}
@@ -110,24 +149,42 @@ export const MermaidEditor = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-foreground">Editor</h2>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCopy}
-                  className="gap-2"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-4 w-4" />
-                      Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      Copy
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.getElementById('file-upload-desktop')?.click()}
+                    className="gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
+                  <input
+                    id="file-upload-desktop"
+                    type="file"
+                    accept=".mmd"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopy}
+                    className="gap-2"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
               <Textarea
                 value={code}
